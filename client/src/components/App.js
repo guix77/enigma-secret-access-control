@@ -3,8 +3,7 @@ import React, { Component } from "react";
 // Imports - Redux
 import connect from "react-redux/es/connect/connect";
 // Imports - Frameworks (Semantic-UI and Material-UI)
-import { Container, Message } from "semantic-ui-react";
-import Paper from "@material-ui/core/Paper";
+import { Message } from "semantic-ui-react";
 import { withStyles } from "@material-ui/core";
 // Imports - Initialize Enigma
 import getEnigmaInit from "../utils/getEnigmaInit.js";
@@ -26,9 +25,6 @@ const styles = theme => ({
 });
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     async componentDidMount() {
         // Initialize enigma-js client library (including web3)
