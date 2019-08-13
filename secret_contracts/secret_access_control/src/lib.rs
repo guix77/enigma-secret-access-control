@@ -12,6 +12,7 @@ use eng_wasm_derive::pub_interface;
 use serde::{Serialize, Deserialize};
 
 // Encrypted state keys.
+static OWNER: &str = "owner";
 static SECRET_MESSAGES: &str = "secretMessages";
 
 // Structs.
@@ -35,8 +36,11 @@ impl Contract {
 // Public trait defining public-facing secret contract functions.
 #[pub_interface]
 pub trait ContractInterface {
+    // Custom construct to initialize the owner of the ESC.
+    fn construct(owner: H160);
+
     // Send a secret messages to recipients.
-    fn send_secret_message(addresses: Vec<H160>, message: String);
+    fn send_secret_message(sender: H160, addresses: Vec<H160>, message: String);
 
     // Read messages for a user (sender).
     fn read_messages(sender: H160) -> String;
@@ -45,10 +49,18 @@ pub trait ContractInterface {
 // Implementation of the public-facing secret contract functions defined in the ContractInterface
 // trait implementation for the Contract struct above.
 impl ContractInterface for Contract {
+    fn construct(owner: H160) {
+        write_state!(OWNER => owner);
+    }
+
     #[no_mangle]
-    fn send_secret_message(addresses: Vec<H160>, message: String) {
+    fn send_secret_message(sender: H160, addresses: Vec<H160>, message: String) {
+        // Restrict to contract owner.
+        let owner: H160 = read_state!(OWNER).unwrap();
+        assert_eq!(sender, owner);
         // Get all secret messages.
         let mut secret_messages = Self::get_all_secret_messages();
+
         // Push new secret message.
         secret_messages.push(SecretMessage {
             whitelist: addresses,
@@ -81,5 +93,7 @@ impl ContractInterface for Contract {
         }
         // Remove last separator & return messages.
         my_concatenated_secret_messages.pop();
+        // Return secret messages for sender.
+        return my_concatenated_secret_messages;
     }
 }

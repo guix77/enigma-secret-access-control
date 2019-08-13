@@ -71,9 +71,10 @@ contract('SecretAccessControl', accounts => {
   it('Alice should send a secret message to Bob and Charles', async () => {
     let task
     // Enigma secret contract function to call in the compute task.
-    const taskFn = 'send_secret_message(address[],string)'
+    const taskFn = 'send_secret_message(address,address[],string)'
     // Function parameters.
     const taskArgs = [
+      [alice, 'address'],
       [[bob, charles], 'address[]'],
       ["Hi Bob and Charles!", 'string'],
     ]
@@ -92,6 +93,29 @@ contract('SecretAccessControl', accounts => {
       task = await enigma.getTaskRecordStatus(task)
     } while (task.ethStatus === 1)
     expect(task.ethStatus).to.equal(2)
+  })
+
+  // Bob can not send a secret message because he's not the contract owner.
+  it('Bob can not send a secret message because he\'s not the contract owner.', async () => {
+    let task
+    const taskFn = 'send_secret_message(address,address[],string)'
+    const taskArgs = [
+      [bob, 'address'],
+      [[alice, dave], 'address[]'],
+      ["Hi Alice and Dave!", 'string'],
+    ]
+    task = await new Promise((resolve, reject) => {
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, bob, contractAddr)
+        .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
+        .on(eeConstants.ERROR, (error) => reject(error))
+    })
+    task = await enigma.getTaskRecordStatus(task)
+    expect(task.ethStatus).to.equal(1)
+    do {
+      await sleep(1000)
+      task = await enigma.getTaskRecordStatus(task)
+    } while (task.ethStatus === 1)
+    expect(task.ethStatus).to.equal(3)
   })
 
   // Bob reads his messages.
@@ -133,8 +157,9 @@ contract('SecretAccessControl', accounts => {
   // Alice sends another secret message to Bob and Dave.
   it('Alice should send a secret message to Bob and Dave', async () => {
     let task
-    const taskFn = 'send_secret_message(address[],string)'
+    const taskFn = 'send_secret_message(address,address[],string)'
     const taskArgs = [
+      [alice, 'address'],
       [[bob, dave], 'address[]'],
       ["Hi Bob and Dave!", 'string'],
     ]

@@ -86,10 +86,13 @@ module.exports = async function(deployer, network, accounts) {
 
   // Deploy your Smart and Secret contracts below this point:
 
+  // We pass the first account to the construct, it will be the contract owner.
   const configSecretAccessControl = {
     filename: 'secret_access_control.wasm',
     fn: 'construct()',
-    args: [],
+    args: [
+      [accounts[0], 'address']
+    ],
     gasLimit: 1000000,
     gasPrice: utils.toGrains(1),
     from: accounts[0]
