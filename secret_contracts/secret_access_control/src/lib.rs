@@ -34,7 +34,7 @@ impl Contract {
 #[pub_interface]
 pub trait ContractInterface {
     fn send_secret_message(addresses: Vec<H160>, message: String);
-    fn read_messages() -> (String, Vec<u8>);
+    fn read_messages() -> String;
 }
 
 // Implementation of the public-facing secret contract functions defined in the ContractInterface
@@ -51,11 +51,11 @@ impl ContractInterface for Contract {
     }
 
     #[no_mangle]
-    fn read_messages() -> (String, Vec<u8>) {
+    fn read_messages() -> String {
         // We can not return an array of strings, so we'll return a concatenated string of results.
         let mut my_concatenated_secret_messages: String = String::new();
-        // Also, we will return an array of integers, giving the string length for each message, so we can reconstruct the array of messages in the UI.
-        let mut my_concatenated_secret_messages_lengths: Vec<u8> = Vec::new();
+        // Separator between strings.
+        let separator = String::from("|");
         // Get all secret messages.
         let all_secret_messages = Self::get_secret_messages();
         // Loop through them.
@@ -66,10 +66,11 @@ impl ContractInterface for Contract {
 
             // Concatenate the message with the others.
             my_concatenated_secret_messages.push_str(&x.secret_message);
-            // Add the message length.
-            // String::chars().count() returns an usize but we want to return uint8.
-            my_concatenated_secret_messages_lengths.push(x.secret_message.chars().count() as u8);
+            // Add the separator.
+            my_concatenated_secret_messages.push_str(&separator);
         }
-        return (my_concatenated_secret_messages, my_concatenated_secret_messages_lengths);
+        // Remove last separator.
+        my_concatenated_secret_messages.pop();
+        return my_concatenated_secret_messages;
     }
 }

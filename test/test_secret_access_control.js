@@ -20,28 +20,17 @@ function sleep(ms) {
 }
 
 const splitMessages = decryptedOutput => {
-  console.log(decryptedOutput)
-  // const decodedParameters = web3.eth.abi.decodeParameters(
-  //   [
-  //     {
-  //       type: 'string',
-  //       name: 'concatenatedMessages',
-  //     },
-  //     {
-  //       type: 'uint[]',
-  //       name: 'messagesLengths'
-  //     }
-  //   ],
-  //   decryptedOutput
-  // )
-  // console.log(decodedParameters)
-  // let pointer = 0
-  // return messagesLengths.map(messageLength => {
-  //   const message = decodedParameters.substring(pointer, pointer + messageLength)
-  //   pointer += messageLength
-  //   return message
-  // })
-  return []
+  const separator = '|'
+  const decodedParameters = web3.eth.abi.decodeParameters(
+    [
+      {
+        type: 'string',
+        name: 'concatenatedMessages',
+      },
+    ],
+    decryptedOutput
+  )
+  return decodedParameters.concatenatedMessages.split(separator)
 }
 
 let enigma = null;
@@ -134,70 +123,63 @@ contract("SecretAccessControl", accounts => {
     )
   });
 
-  // // Alice sends another secret message to Bob and Dave.
-  // it('Alice should send a secret message to Bob and Dave', async () => {
-  //   let taskFn = 'send_secret_message(address[],string)';
-  //   let taskArgs = [
-  //     [[bob, dave], 'address[]'],
-  //     ["Hi Bob and Dave!", 'string'],
-  //   ];
-  //   task = await new Promise((resolve, reject) => {
-  //     enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, alice, contractAddr)
-  //       .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
-  //       .on(eeConstants.ERROR, (error) => reject(error));
-  //   });
-  //   // Task should be pending.
-  //   task = await enigma.getTaskRecordStatus(task);
-  //   expect(task.ethStatus).to.equal(1);
-  //   // Task should be completed after a while.
-  //   do {
-  //     await sleep(1000);
-  //     task = await enigma.getTaskRecordStatus(task);
-  //   } while (task.ethStatus === 1);
-  //   expect(task.ethStatus).to.equal(2);
-  // });
+  // Alice sends another secret message to Bob and Dave.
+  it('Alice should send a secret message to Bob and Dave', async () => {
+    let taskFn = 'send_secret_message(address[],string)';
+    let taskArgs = [
+      [[bob, dave], 'address[]'],
+      ["Hi Bob and Dave!", 'string'],
+    ];
+    task = await new Promise((resolve, reject) => {
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, alice, contractAddr)
+        .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
+        .on(eeConstants.ERROR, (error) => reject(error));
+    });
+    // Task should be pending.
+    task = await enigma.getTaskRecordStatus(task);
+    expect(task.ethStatus).to.equal(1);
+    // Task should be completed after a while.
+    do {
+      await sleep(1000);
+      task = await enigma.getTaskRecordStatus(task);
+    } while (task.ethStatus === 1);
+    expect(task.ethStatus).to.equal(2);
+  });
 
-  // // Bob reads his messages again.
-  // it('Bob should have 2 messages from Alice', async () => {
-  //   let taskFn = 'read_messages()';
-  //   let taskArgs = [];
-  //   task = await new Promise((resolve, reject) => {
-  //       enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, bob, contractAddr)
-  //           .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
-  //           .on(eeConstants.ERROR, (error) => reject(error));
-  //   });
-  //   // Task should be pending.
-  //   task = await enigma.getTaskRecordStatus(task);
-  //   expect(task.ethStatus).to.equal(1);
-  //   // Task should be completed after a while.
-  //   do {
-  //     await sleep(1000);
-  //     task = await enigma.getTaskRecordStatus(task);
-  //   } while (task.ethStatus === 1);
-  //   // TODO: task is failing (ethStatus = 3), why? It's the same as before.
-  //   //console.log(task)
-  //   expect(task.ethStatus).to.equal(2);
-  //   // Bob should get 2 messages from Alice.
-  //   task = await new Promise((resolve, reject) => {
-  //   enigma.getTaskResult(task)
-  //     .on(eeConstants.GET_TASK_RESULT_RESULT, (result) => resolve(result))
-  //     .on(eeConstants.ERROR, (error) => reject(error));
-  //   });
-  //   expect(task.engStatus).to.equal('SUCCESS');
-  //   task = await enigma.decryptTaskResult(task);
-  //   // deep.equal instead of equal
-  //   // @see https://medium.com/@victorleungtw/testing-with-mocha-array-comparison-e9a45b57df27
-  //   console.log(task.decryptedOutput)
-  //   expect(web3.eth.abi.decodeParameters([{
-  //       type: 'string[]',
-  //       name: 'messages',
-  //   }], task.decryptedOutput).messages)
-  //   .to.deep.equal([
-  //     'Hi Bob and Charles!',
-  //     'Hi Bob and Dave!'
-  //     ]
-  //   );
-  // });
+  // Bob reads his messages again.
+  it('Bob should have 2 messages from Alice', async () => {
+    let taskFn = 'read_messages()';
+    let taskArgs = [];
+    task = await new Promise((resolve, reject) => {
+        enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, bob, contractAddr)
+            .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
+            .on(eeConstants.ERROR, (error) => reject(error));
+    });
+    // Task should be pending.
+    task = await enigma.getTaskRecordStatus(task);
+    expect(task.ethStatus).to.equal(1);
+    // Task should be completed after a while.
+    do {
+      await sleep(1000);
+      task = await enigma.getTaskRecordStatus(task);
+    } while (task.ethStatus === 1);
+    expect(task.ethStatus).to.equal(2);
+    // Bob should get 2 messages from Alice.
+    task = await new Promise((resolve, reject) => {
+    enigma.getTaskResult(task)
+      .on(eeConstants.GET_TASK_RESULT_RESULT, (result) => resolve(result))
+      .on(eeConstants.ERROR, (error) => reject(error));
+    });
+    expect(task.engStatus).to.equal('SUCCESS');
+    task = await enigma.decryptTaskResult(task);
+    const messages = splitMessages(task.decryptedOutput)
+    expect(messages).to.deep.equal(
+      [
+        'Hi Bob and Charles!',
+        'Hi Bob and Dave!'
+      ]
+    )
+  });
 
   // // Charles reads his messages.
   // it('Charles should have 1 message from Alice', async () => {
