@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const Web3 = require('web3');
 const dotenv = require('dotenv');
-const Sample = artifacts.require('Sample.sol');
 const {Enigma, utils, eeConstants} = require('enigma-js/node');
 
 dotenv.config({path:path.resolve(process.cwd(), '..', '.env')});
@@ -86,22 +85,6 @@ module.exports = async function(deployer, network, accounts) {
   enigma.admin();
 
   // Deploy your Smart and Secret contracts below this point:
-
-  deployer.deploy(Sample).then(function(){
-    console.log(`Smart Contract "Sample.Sol" has been deployed at ETH address: ${Sample.address}`);
-    return;
-  });
-
-  const config = {
-    filename: 'simple_addition.wasm',
-    fn: 'construct()',
-    args: '',
-    gasLimit: 100000,
-    gasPrice: utils.toGrains(1),
-    from: accounts[0]
-  };
-  const address = await deploySecretContract(config);
-  console.log(`Secret Contract "${config.filename}" deployed at Enigma address: ${address}`);
 
   const configSecretAccessControl = {
     filename: 'secret_access_control.wasm',
