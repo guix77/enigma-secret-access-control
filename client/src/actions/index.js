@@ -18,3 +18,11 @@ export const notifyMessage = (notification) => {
         payload: notification
     };
 };
+
+// Switch current Ethereum account Id (accounts[0], accounts[1], ...)
+export const switchAccountId = id => {
+    return {
+        type: 'ACCOUNT_SWITCHED',
+        payload: id
+    };
+};

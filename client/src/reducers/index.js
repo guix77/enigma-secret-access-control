@@ -25,9 +25,19 @@ const notifyMessageReducer = (notification = {open: false, message: ''}, action)
     return notification;
 };
 
+// Responds to switchAccountId action to save current account Id
+const switchAccountIdReducer = (accountId = 0, action) => {
+    if (action.type === 'ACCOUNT_SWITCHED') {
+        return action.payload;
+    }
+
+    return accountId;
+};
+
 export default combineReducers({
     enigma: initializeEnigmaReducer,
     accounts: initializeAccountsReducer,
     notification: notifyMessageReducer,
-    form: formReducer
+    form: formReducer,
+    accountId: switchAccountIdReducer
 });

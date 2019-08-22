@@ -1,27 +1,24 @@
 // Imports - React
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 // Imports - Redux
 import connect from "react-redux/es/connect/connect";
 // Imports - Frameworks (Semantic-UI and Material-UI)
 import { Message } from "semantic-ui-react";
-import { withStyles } from "@material-ui/core";
+import { Grid, withStyles } from "@material-ui/core";
 // Imports - Initialize Enigma
 import getEnigmaInit from "../utils/getEnigmaInit.js";
 // Imports - Components
 import Header from "./Header";
-import "../App.css";
 // Imports - Actions (Redux)
 import { initializeEnigma, initializeAccounts } from '../actions';
+// Imports - User names (Alice, Bob...)
+import getUsers from "../utils/getUsers";
 
 const styles = theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
+    main: {
+        margin: theme.spacing.unit * 4,
+        flexGrow: 1
+    }
 });
 
 class App extends Component {
@@ -38,27 +35,36 @@ class App extends Component {
     }
 
     render() {
-        if (!this.props.enigma) {
-            return (
-                <div className="App">
-                    <Header/>
-                    <Message color="red">Enigma setup still loading...</Message>
+        const { classes, accountId, enigma } = this.props;
+        const userName = getUsers.names[accountId];
+
+        return (
+            <Fragment>
+                <Header />
+                <div className={classes.main}>
+                    <Grid container spacing={4}>
+                        <Grid item xs={12}>
+                            {
+                                enigma ? (
+                                    <Message color="green">Welcome {userName}!</Message>
+                                )
+                                    : (
+                                        <Message color="red">Enigma setup still loading...</Message>
+                                    )
+                            }
+                        </Grid>
+                    </Grid>
                 </div>
-            );
-        }
-        else {
-            return (
-                <div className="App">
-                    <Header/>
-                    <Message color="green">Enigma setup has loaded!</Message>
-                </div>
-            );
-        }
+            </Fragment>
+        );
     }
 }
 
 const mapStateToProps = (state) => {
-    return { enigma: state.enigma }
+    return {
+        enigma: state.enigma,
+        accountId: state.accountId
+    }
 };
 
 export default connect(
