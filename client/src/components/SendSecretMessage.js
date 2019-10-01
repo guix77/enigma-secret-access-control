@@ -36,7 +36,7 @@ class SendMessage extends Component {
         this.props.setContent(event.target.value);
     }
 
-    sleep = ms => {
+    sleep = async ms => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 

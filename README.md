@@ -1,68 +1,61 @@
-## 1. Rust
+# Enigma demo: secret access control
 
-+ https://blog.enigma.co/getting-started-with-discovery-the-rust-programming-language-4d1e0b06de15
+This repository is my take on this Enigma GitCoin bounty: https://gitcoin.co/issue/enigmampc/EnigmaBounties/1/3256
 
-## 1.2. Rust install
+## Status : broken
 
-+ https://doc.rust-lang.org/book/ch01-01-installation.html
+Problems:
 
-    curl https://sh.rustup.rs -sSf | sh
++ When trying to read messages, I'm encountering this bug : https://github.com/enigmampc/enigma-contract/issues/154#issuecomment-537087156
 
-    rustc --version
-    rustc 1.36.0 (a53f9df32 2019-07-03)
+## Install
 
-## 1.3. PLay with Rust
+### Rust
 
-Coming from Solidity, we find again structs
+If you do not have Rust, you can follow the installation here : https://doc.rust-lang.org/book/ch01-01-installation.html
 
-Small error in the end of the tutorial: https://medium.com/@guillaume.duveau/great-tutorial-732ee1c1ae5e
+### Enigma blockchain stack
 
-## 2. Enigma secrets contracts
+Be sure to use a version < 12 of Node.js, because there are dependencies on Nativescript which is not yet compatible with Node 12. I recommend Node 11.
 
-https://blog.enigma.co/getting-started-with-enigma-an-intro-to-secret-contracts-cdba4fe501c2
+Install the project dependencies:
 
-### 2.1. Setup
+    npm install
 
-discovery-cli depends on Nativescript which is not yet compatible with latest Node, so we'll use Node 11:
+One of those dependencies is Enigma's *discovery-cli*. It allows to manage a whole local Enigma blockchain stack with Docker. Before this, you want to check :
++ that you [manage Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/), because discovery-cli will instantiate some Docker containers
++ that you have a lot of space on the partition Docker is storing the images, because Enigma's Docker images are pretty beefy (15 GB in total)
 
-    nvm use 11
-
-Then install discovery-cli with yarn:
-
-    yarn global add @enigmampc/discovery-cli
-
-Yarn 1.16.0
-
-When running:
+You can now init Enigma's blockchain stack:
 
     discovery init
 
-I had a problem with Docker. It's beacause on my dev machine, I manage Docker with sudo. To avoid wasting too much time, I temporarily followed [Manage Docker a non-root user](https://docs.docker.com/install/linux/linux-postinstall/)
+Then start the stack:
 
-The Docker images are pretty beefy (15 GB) so be sure to have enough disk space... unlike me https://forum.enigma.co/t/help-with-init-moved/1020/13 ;)
+    discovery start
 
-/home/guix/.config/yarn/global/node_modules/clui/node_modules/cli-color/trim.js:8
-module.exports = function (str) { return str.replace(r, ''); };
-                                             ^
+Open a new bash shell while leaving this one running.
 
-    TypeError: Cannot read property 'replace' of undefined
-        at module.exports (/home/guix/.config/yarn/global/node_modules/clui/node_modules/cli-color/trim.js:8:46)
-        at Line.column (/home/guix/.config/yarn/global/node_modules/clui/lib/clui.js:293:23)
-        at /home/guix/.config/yarn/global/node_modules/@enigmampc/discovery-cli/src/docker.js:45:14
-        at Array.forEach (<anonymous>)
-        at IncomingMessage.stream.on (/home/guix/.config/yarn/global/node_modules/@enigmampc/discovery-cli/src/docker.js:10:30)
-        at IncomingMessage.emit (events.js:193:13)
-        at IncomingMessage.EventEmitter.emit (domain.js:481:20)
-        at addChunk (_stream_readable.js:295:12)
-        at readableAddChunk (_stream_readable.js:276:11)
-        at IncomingMessage.Readable.push (_stream_readable.js:231:10)
-        at HTTPParser.parserOnBody (_http_common.js:126:22)
-        at Socket.socketOnData (_http_client.js:447:22)
-        at Socket.emit (events.js:193:13)
-        at Socket.EventEmitter.emit (domain.js:481:20)
-        at addChunk (_stream_readable.js:295:12)
-        at readableAddChunk (_stream_readable.js:276:11)
-        at Socket.Readable.push (_stream_readable.js:231:10)
-        at Pipe.onStreamRead (internal/stream_base_commons.js:154:17)
+### "Secret access control" secret contract deployment
 
-the code to add in 2_deploy_contracts.js must be added inside of module.exports = async function(deployer, network, accounts) {}
+Deploy the "Secret access control" secret contract:
+
+    discovery migrate
+
+### This demo frontend
+
+Go to ./client, install the dependencies and launch the frontend:
+
+    cd client
+    npm install
+    npm start
+
+## How does it work?
+
+Like Truffle, Discovery creates 10 accounts (accounts[0] to [9]). The Enigma secret contract "secret access control" is deployed with the first account, account[0]. We call this user Alice. It is her secret contract, so only her can send secret messages to the other accounts (Bob, Charles, Dave and Eve. We did not use the last 5 available accounts).
+
+When the frontend starts, you are by default using Alice's account. Therefore you see the SendSecretMessage React component. You can select multiple recipients between her friends, write a secret message and send it to them.
+
+Now if you use the account switcher on the top-right corner, you can impersonate any of her friends. They will all see the ReadSecretMessages component. By clicking on the button, you read and decrypt the secret messages Alice sent you(1)
+
+(1) right now reading does not work, see the Status section above

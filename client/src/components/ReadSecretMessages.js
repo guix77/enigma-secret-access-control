@@ -24,12 +24,12 @@ const styles = theme => ({
 
 class ReadMessages extends Component {
 
-    sleep = ms => {
+    sleep = async ms => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     splitMessages = decryptedOutput => {
-        const decodedParameters = this.props.web3.eth.abi.decodeParameters(
+        const decodedParameters = this.props.enigma.web3.eth.abi.decodeParameters(
             [
                 {
                     type: 'string',
@@ -82,13 +82,12 @@ class ReadMessages extends Component {
             await this.sleep(1000);
         }
         if (task.ethStatus === 2) {
-            openSnackbar({ message: 'Task succeeded: read secret messages' })
-            console.log(task)
+            openSnackbar({ message: 'Task succeeded: read secret messages' });
             // Decrypt messages
             task = await this.props.enigma.decryptTaskResult(task);
             // // Rebuild messages from concatenated string of task decrypted output.
-            // const messages = this.splitMessages(task.decryptedOutput);
-            const messages = ["yo", "yo2"]
+            const messages = this.splitMessages(task.decryptedOutput);
+            // const messages = ["message example 1", "message example 2"]
             // Set read messages.
             this.props.setMessages(messages)
         } else {
