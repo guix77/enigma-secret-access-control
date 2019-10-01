@@ -25,6 +25,15 @@ const notifyMessageReducer = (notification = {open: false, message: ''}, action)
     return notification;
 };
 
+// Responds to deploySecretAccessControl action to save deployed "secret access control" secret contract address
+const deployedSecretAccessControlReducer = (deployedSecretAccessControl = null, action) => {
+    if (action.type === 'SECRET_ACCESS_CONTROL_DEPLOYED') {
+        return action.payload;
+    }
+
+    return deployedSecretAccessControl;
+};
+
 // Responds to switchAccountId action to save current account Id
 const switchAccountIdReducer = (accountId = 0, action) => {
     if (action.type === 'ACCOUNT_SWITCHED') {
@@ -34,10 +43,31 @@ const switchAccountIdReducer = (accountId = 0, action) => {
     return accountId;
 };
 
+// Responds to setRecipients action to save secret message recipients
+const setRecipientsReducer = (recipients = [], action) => {
+    if (action.type === 'SET_RECIPIENTS') {
+        return action.payload;
+    }
+
+    return recipients;
+};
+
+// Responds to setContent action to save secret message content
+const setContentReducer = (content = "", action) => {
+    if (action.type === 'SET_CONTENT') {
+        return action.payload;
+    }
+
+    return content;
+};
+
 export default combineReducers({
     enigma: initializeEnigmaReducer,
     accounts: initializeAccountsReducer,
     notification: notifyMessageReducer,
     form: formReducer,
-    accountId: switchAccountIdReducer
+    accountId: switchAccountIdReducer,
+    recipients: setRecipientsReducer,
+    content: setContentReducer,
+    deployedSecretAccessControl: deployedSecretAccessControlReducer
 });

@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import logger from 'redux-logger';
 import App from './components/App';
 import 'semantic-ui-css/semantic.min.css'
 import reducers from './reducers';
@@ -10,7 +11,7 @@ import reducers from './reducers';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <Provider store={createStore(reducers)}>
+    <Provider store={createStore(reducers, applyMiddleware(logger))}>
         <App />
     </Provider>,
     document.getElementById('root'));

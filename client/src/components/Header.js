@@ -36,12 +36,7 @@ const styles = theme => ({
 class Header extends Component {
 
     state = {
-        auth: true,
         anchorEl: null,
-    };
-
-    handleChange = event => {
-        this.setState({ auth: event.target.checked });
     };
 
     handleMenu = event => {
@@ -59,7 +54,7 @@ class Header extends Component {
 
     render() {
         const { classes } = this.props;
-        const { auth, anchorEl } = this.state;
+        const { anchorEl } = this.state;
         const open = Boolean(anchorEl);
         const users = getUsers.names;
         return (
