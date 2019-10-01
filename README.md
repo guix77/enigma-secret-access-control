@@ -2,12 +2,7 @@
 
 This repository is my take on this Enigma GitCoin bounty: https://gitcoin.co/issue/enigmampc/EnigmaBounties/1/3256
 
-## Status : broken
-
-Problems:
-
-+ When trying to read messages, I'm encountering this bug : https://github.com/enigmampc/enigma-contract/issues/154#issuecomment-537087156
-+ A the time of development of this demo, there was no equivalent of msg.sender in ESCs. We emulate this feature by artificially passing an address from the frontend call.
+Important note: a the time of development of this demo, there was no equivalent of msg.sender in ESCs. We emulate this feature by artificially passing an address from the frontend call.
 
 ## Install
 
@@ -65,6 +60,4 @@ Like Truffle, Discovery creates 10 accounts (accounts[0] to [9]). The Enigma sec
 
 When the frontend starts, you are by default using Alice's account. Therefore you see the SendSecretMessage React component. You can select multiple recipients between her friends, write a secret message and send it to them.
 
-Now if you use the account switcher on the top-right corner, you can impersonate any of her friends. They will all see the ReadSecretMessages component. By clicking on the button, you read and decrypt the secret messages Alice sent you(1)
-
-(1) right now reading does not work, see the Status section above
+Now if you use the account switcher on the top-right corner, you can impersonate any of her friends. They will all see the ReadSecretMessages component. By clicking on the button, you read and decrypt the secret messages Alice sent you.
