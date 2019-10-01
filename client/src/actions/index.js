@@ -35,7 +35,7 @@ export const switchAccountId = id => {
     };
 };
 
-// Set secret message recipients
+// Set new secret message recipients
 export const setRecipients = recipients => {
     return {
         type: 'SET_RECIPIENTS',
@@ -43,10 +43,18 @@ export const setRecipients = recipients => {
     };
 };
 
-// Set secret message content
+// Set new secret message content
 export const setContent = content => {
     return {
         type: 'SET_CONTENT',
         payload: content
+    };
+};
+
+// Set read secret messages
+export const setMessages = messages => {
+    return {
+        type: 'SET_MESSAGES',
+        payload: messages
     };
 };

@@ -1,5 +1,5 @@
 // Imports - React
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 // Imports - Redux
 import connect from "react-redux/es/connect/connect";
 // Imports - Frameworks (Semantic-UI and Material-UI)
@@ -24,10 +24,6 @@ import Notifier, {openSnackbar} from "./Notifier";
 import { setRecipients, setContent } from "../actions";
 
 const styles = theme => ({
-    main: {
-        margin: theme.spacing(4),
-        flexGrow: 1
-    }
 });
 
 class SendMessage extends Component {
@@ -93,57 +89,57 @@ class SendMessage extends Component {
         // "content" is the message content
         const { sender, possibleRecipients, recipients, content } = this.props;
         return (
-            <Grid container spacing={1}>
-                <Grid item xs={12}>
-                    <Typography variant="h3" gutterBottom>Send a secret message</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Notifier />
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="recipients">Select one or more recipients</InputLabel>
-                        <Select
-                            multiple
-                            value={recipients}
-                            onChange={event => this.changeRecipients(event)}
-                            input={<Input id="recipients" />}
+            <Fragment>
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <Typography variant="h3" gutterBottom>Send a secret message</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel htmlFor="recipients">Select one or more recipients</InputLabel>
+                            <Select
+                                multiple
+                                value={recipients}
+                                onChange={event => this.changeRecipients(event)}
+                                input={<Input id="recipients" />}
+                            >
+                            {
+                                possibleRecipients.map((recipient, index) => (
+                                    <MenuItem
+                                        key={index}
+                                        value={recipient.address}
+                                    >
+                                        {recipient.name}
+                                    </MenuItem>
+                                ))
+                            }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="content"
+                            label="Write your secret message"
+                            multiline
+                            rowsMax="3"
+                            value={content}
+                            onChange={event => this.changeContent(event)}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button
+                            onClick={() => this.sendMessage(sender, recipients, content)}
+                            color="primary"
+                            variant="contained"
+                            size="large"
                         >
-                        {
-                            possibleRecipients.map((recipient, index) => (
-                                <MenuItem
-                                    key={index}
-                                    value={recipient.address}
-                                >
-                                    {recipient.name}
-                                </MenuItem>
-                            ))
-                        }
-                        </Select>
-                    </FormControl>
+                            Send secret message
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        id="content"
-                        label="Write your secret message"
-                        multiline
-                        rowsMax="3"
-                        value={content}
-                        onChange={event => this.changeContent(event)}
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button
-                        onClick={() => this.sendMessage(sender, recipients, content)}
-                        color="primary"
-                        variant="contained"
-                        size="large"
-                    >
-                        Send secret message
-                    </Button>
-                </Grid>
-            </Grid>
+                <Notifier />
+            </Fragment>
         )
     }
 }

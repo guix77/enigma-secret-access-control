@@ -43,7 +43,7 @@ const switchAccountIdReducer = (accountId = 0, action) => {
     return accountId;
 };
 
-// Responds to setRecipients action to save secret message recipients
+// Responds to setRecipients action to save new secret message recipients
 const setRecipientsReducer = (recipients = [], action) => {
     if (action.type === 'SET_RECIPIENTS') {
         return action.payload;
@@ -52,7 +52,7 @@ const setRecipientsReducer = (recipients = [], action) => {
     return recipients;
 };
 
-// Responds to setContent action to save secret message content
+// Responds to setContent action to save new secret message content
 const setContentReducer = (content = "", action) => {
     if (action.type === 'SET_CONTENT') {
         return action.payload;
@@ -61,13 +61,23 @@ const setContentReducer = (content = "", action) => {
     return content;
 };
 
+// Responds to setMessages action to save read secret messages
+const setMessagesReducer = (messages = [], action) => {
+    if (action.type === 'SET_MESSAGES') {
+        return action.payload;
+    }
+
+    return messages;
+};
+
 export default combineReducers({
     enigma: initializeEnigmaReducer,
     accounts: initializeAccountsReducer,
     notification: notifyMessageReducer,
     form: formReducer,
+    deployedSecretAccessControl: deployedSecretAccessControlReducer,
     accountId: switchAccountIdReducer,
     recipients: setRecipientsReducer,
     content: setContentReducer,
-    deployedSecretAccessControl: deployedSecretAccessControlReducer
+    messages: setMessagesReducer
 });

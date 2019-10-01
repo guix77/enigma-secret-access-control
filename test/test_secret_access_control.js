@@ -121,7 +121,7 @@ contract('SecretAccessControl', accounts => {
   // Bob reads his messages.
   it('Bob should have 1 message from Alice', async () => {
     let task
-    const taskFn = 'read_messages()'
+    const taskFn = 'read_messages(address)'
     const taskArgs = [
       [bob, 'address']
     ]
@@ -180,7 +180,7 @@ contract('SecretAccessControl', accounts => {
   // Bob reads his messages again.
   it('Bob should have 2 messages from Alice', async () => {
     let task
-    const taskFn = 'read_messages()'
+    const taskFn = 'read_messages(address)'
     const taskArgs = [
       [bob, 'address']
     ]
@@ -216,7 +216,7 @@ contract('SecretAccessControl', accounts => {
   // Charles reads his messages.
   it('Charles should have 1 message from Alice', async () => {
     let task
-    const taskFn = 'read_messages()'
+    const taskFn = 'read_messages(address)'
     const taskArgs = [
       [charles, 'address']
     ]
@@ -251,7 +251,7 @@ contract('SecretAccessControl', accounts => {
   // Dave reads his messages.
   it('Dave should have 1 message from Alice', async () => {
     let task
-    const taskFn = 'read_messages()'
+    const taskFn = 'read_messages(address)'
     const taskArgs = [
       [dave, 'address']
     ]
@@ -286,7 +286,7 @@ contract('SecretAccessControl', accounts => {
   // Eve reads her messages.
   it('Eve should have no message from Alice', async () => {
     let task
-    const taskFn = 'read_messages()'
+    const taskFn = 'read_messages(address)'
     const taskArgs = [
       [eve, 'address']
     ]
