@@ -36,11 +36,15 @@ Then start the stack:
 
 Open a new bash shell while leaving this one running.
 
-### "Secret access control" secret contract deployment
+### "Secret access control" secret contracts
 
 Deploy the "Secret access control" secret contract:
 
     discovery migrate
+
+You can launch the Mocha tests if you want:
+
+    discovery test
 
 ### This demo frontend
 
