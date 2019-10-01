@@ -56,7 +56,7 @@ contract('SecretAccessControl', accounts => {
       web3,
       EnigmaContract.networks['4447'].address,
       EnigmaTokenContract.networks['4447'].address,
-      'http://localhost:3346',
+      'http://localhost:3333',
       {
         gas: 4712388,
         gasPrice: 100000000000,
@@ -69,6 +69,7 @@ contract('SecretAccessControl', accounts => {
 
   // Alice sends a secret message to Bob and Charles.
   it('Alice should send a secret message to Bob and Charles', async () => {
+    await sleep(1000)
     let task
     // Enigma secret contract function to call in the compute task.
     const taskFn = 'send_secret_message(address,address[],string)'
@@ -97,6 +98,7 @@ contract('SecretAccessControl', accounts => {
 
   // Bob can not send a secret message because he's not the contract owner.
   it('Bob can not send a secret message because he\'s not the contract owner.', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'send_secret_message(address,address[],string)'
     const taskArgs = [
@@ -120,6 +122,7 @@ contract('SecretAccessControl', accounts => {
 
   // Bob reads his messages.
   it('Bob should have 1 message from Alice', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'read_messages(address)'
     const taskArgs = [
@@ -156,6 +159,7 @@ contract('SecretAccessControl', accounts => {
 
   // Alice sends another secret message to Bob and Dave.
   it('Alice should send a secret message to Bob and Dave', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'send_secret_message(address,address[],string)'
     const taskArgs = [
@@ -179,6 +183,7 @@ contract('SecretAccessControl', accounts => {
 
   // Bob reads his messages again.
   it('Bob should have 2 messages from Alice', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'read_messages(address)'
     const taskArgs = [
@@ -197,6 +202,7 @@ contract('SecretAccessControl', accounts => {
     } while (task.ethStatus === 1)
     expect(task.ethStatus).to.equal(2)
     // Bob should get 2 messages from Alice.
+    await sleep(1000)
     task = await new Promise((resolve, reject) => {
     enigma.getTaskResult(task)
       .on(eeConstants.GET_TASK_RESULT_RESULT, (result) => resolve(result))
@@ -215,6 +221,7 @@ contract('SecretAccessControl', accounts => {
 
   // Charles reads his messages.
   it('Charles should have 1 message from Alice', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'read_messages(address)'
     const taskArgs = [
@@ -250,6 +257,7 @@ contract('SecretAccessControl', accounts => {
 
   // Dave reads his messages.
   it('Dave should have 1 message from Alice', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'read_messages(address)'
     const taskArgs = [
@@ -285,6 +293,7 @@ contract('SecretAccessControl', accounts => {
 
   // Eve reads her messages.
   it('Eve should have no message from Alice', async () => {
+    await sleep(1000)
     let task
     const taskFn = 'read_messages(address)'
     const taskArgs = [

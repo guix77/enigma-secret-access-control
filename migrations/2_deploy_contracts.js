@@ -33,7 +33,6 @@ async function deploySecretContract(config){
 
   try {
     preCode = fs.readFileSync(path.resolve(migrationsFolder, '../build/secret_contracts', config.filename));
-    preCode = preCode.toString('hex');
   } catch(e) {
     console.log('Error:', e.stack);
   }
@@ -56,7 +55,7 @@ async function deploySecretContract(config){
   var result = await enigma.admin.isDeployed(scTask.scAddr);
   if(result) {
 
-    fs.writeFile(path.join('./test/',config.filename.replace(/\.wasm$/, '.txt')), scTask.scAddr, 'utf8', function(err) {
+    fs.writeFile(path.resolve(migrationsFolder, '../test/', config.filename.replace(/\.wasm$/, '.txt')), scTask.scAddr, 'utf8', function(err) {
       if(err) {
         return console.log(err);
       }
@@ -75,7 +74,7 @@ module.exports = async function(deployer, network, accounts) {
     web3,
     EnigmaContract.networks['4447'].address,
     EnigmaTokenContract.networks['4447'].address,
-    'http://localhost:3346',
+    'http://localhost:3333',
     {
       gas: 4712388,
       gasPrice: 100000000000,
@@ -86,8 +85,7 @@ module.exports = async function(deployer, network, accounts) {
 
   // Deploy your Smart and Secret contracts below this point:
 
-  // We pass the first account to the construct, it will be the contract owner.
-  const configSecretAccessControl = {
+  const config = {
     filename: 'secret_access_control.wasm',
     fn: 'construct()',
     args: [
@@ -97,6 +95,6 @@ module.exports = async function(deployer, network, accounts) {
     gasPrice: utils.toGrains(1),
     from: accounts[0]
   };
-  const addressSecretAccessControl = await deploySecretContract(configSecretAccessControl);
-  console.log(`Secret Contract "${configSecretAccessControl.filename}" deployed at Enigma address: ${addressSecretAccessControl}`);
+  const address = await deploySecretContract(config);
+  console.log(`Secret Contract "${config.filename}" deployed at Enigma address: ${address}`);
 };
