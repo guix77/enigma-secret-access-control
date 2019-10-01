@@ -7,6 +7,7 @@ This repository is my take on this Enigma GitCoin bounty: https://gitcoin.co/iss
 Problems:
 
 + When trying to read messages, I'm encountering this bug : https://github.com/enigmampc/enigma-contract/issues/154#issuecomment-537087156
++ A the time of development of this demo, there was no equivalent of msg.sender in ESCs. We emulate this feature by artificially passing an address from the frontend call.
 
 ## Install
 
