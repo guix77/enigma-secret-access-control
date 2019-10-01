@@ -17,7 +17,8 @@ import { AccountCircle } from "@material-ui/icons";
 // User names
 import getUsers from "../utils/getUsers";
 // Switch account Id action
-import { switchAccountId } from "../actions";
+// Set read secret messages action
+import { switchAccountId, setMessages } from "../actions";
 
 const styles = theme => ({
     root: {
@@ -49,6 +50,7 @@ class Header extends Component {
 
     handleSwitchAccountId = id => {
         this.props.switchAccountId(id);
+        this.props.setMessages([]);
         this.handleClose();
     }
 
@@ -113,5 +115,5 @@ Header.propTypes = {
 
 export default connect(
     null,
-    { switchAccountId }
+    { switchAccountId, setMessages }
 )(withStyles(styles)(Header));
