@@ -24,7 +24,7 @@ const styles = theme => ({
 
 class ReadMessages extends Component {
 
-    sleep = async ms => {
+    sleep = ms => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
@@ -84,8 +84,15 @@ class ReadMessages extends Component {
         if (task.ethStatus === 2) {
             openSnackbar({ message: 'Task succeeded: read secret messages' });
             // Decrypt messages
+            // Get task result by passing in existing task - obtains the encrypted, abi-encoded output
+            task = await new Promise((resolve, reject) => {
+                this.props.enigma.getTaskResult(task)
+                    .on(eeConstants.GET_TASK_RESULT_RESULT, (result) => resolve(result))
+                    .on(eeConstants.ERROR, (error) => reject(error))
+            });
+            // Decrypt the task result - obtains the decrypted, abi-encoded output
             task = await this.props.enigma.decryptTaskResult(task);
-            // // Rebuild messages from concatenated string of task decrypted output.
+            // Rebuild messages from concatenated string of task decrypted output.
             const messages = this.splitMessages(task.decryptedOutput);
             // const messages = ["message example 1", "message example 2"]
             // Set read messages.
