@@ -19,19 +19,23 @@ If you do not have Rust, you can follow the installation here : https://doc.rust
 
 Be sure to use a version < 12 of Node.js, because there are dependencies on Nativescript which is not yet compatible with Node 12. I recommend Node 11.
 
+Install globally discovery-cli, Enigma's tool to manage a whole local Enigma blockchain stack with Docker, deploy contracts, run tests. Think Truffle for Enigma (and yes it uses Truffle).
+
+    npm install -g @enigmampc/discovery-cli
+
 Install the project dependencies:
 
     npm install
 
-One of those dependencies is Enigma's *discovery-cli*. It allows to manage a whole local Enigma blockchain stack with Docker. Before this, you want to check :
+Edit .env, especially:
+
+    BUILD_CONTRACTS_PATH
+
+We can now almost start the Docker stack. Before this, you want to check :
 + that you [manage Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/), because discovery-cli will instantiate some Docker containers
 + that you have a lot of space on the partition Docker is storing the images, because Enigma's Docker images are pretty beefy (15 GB in total)
 
-You can now init Enigma's blockchain stack:
-
-    discovery init
-
-Then start the stack:
+Start the stack:
 
     discovery start
 
